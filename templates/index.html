@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Health Risk Prediction</title>
+    <link rel="stylesheet" href="static/style.css" />
+</head>
+<body>
+    <main>
+        <h1>Health Risk Prediction</h1>
+        <form method="post" action="/predict" novalidate>
+            <label for="age">Age</label>
+            <input type="range" id="age" name="age" min="0" max="100" value="40" oninput="this.nextElementSibling.value = this.value" />
+            <output>40</output>
+
+            <fieldset class="radio-group" aria-label="Gender">
+                <legend>Gender</legend>
+                <label class="custom-radio">
+                    <input type="radio" name="gender" value="male" checked />
+                    <span>Male</span>
+                </label>
+                <label class="custom-radio">
+                    <input type="radio" name="gender" value="female" />
+                    <span>Female</span>
+                </label>
+                <label class="custom-radio">
+                    <input type="radio" name="gender" value="other" />
+                    <span>Other</span>
+                </label>
+            </fieldset>
+
+            <label for="bmi">BMI</label>
+            <input type="range" id="bmi" name="bmi" min="10" max="50" step="0.1" value="25" oninput="this.nextElementSibling.value = this.value" />
+            <output>25</output>
+
+            <label for="smoking_status">Smoking Status</label>
+            <select id="smoking_status" name="smoking_status">
+                <option value="never">Never</option>
+                <option value="former">Former</option>
+                <option value="current">Current</option>
+            </select>
+
+            <label for="alcohol_intake_per_week">Alcohol Intake per Week</label>
+            <input type="range" id="alcohol_intake_per_week" name="alcohol_intake_per_week" min="0" max="30" value="5" oninput="this.nextElementSibling.value = this.value" />
+            <output>5</output>
+
+            <label for="exercise_frequency_per_week">Exercise Frequency per Week</label>
+            <input type="range" id="exercise_frequency_per_week" name="exercise_frequency_per_week" min="0" max="7" value="3" oninput="this.nextElementSibling.value = this.value" />
+            <output>3</output>
+
+            <label for="diet_quality">Diet Quality</label>
+            <select id="diet_quality" name="diet_quality">
+                <option value="poor">Poor</option>
+                <option value="average" selected>Average</option>
+                <option value="good">Good</option>
+            </select>
+
+            <label for="sleep_hours_per_night">Sleep Hours per Night</label>
+            <input type="range" id="sleep_hours_per_night" name="sleep_hours_per_night" min="0" max="12" step="0.5" value="7" oninput="this.nextElementSibling.value = this.value" />
+            <output>7</output>
+
+            <label for="stress_level">Stress Level</label>
+            <select id="stress_level" name="stress_level">
+                <option value="low">Low</option>
+                <option value="moderate" selected>Moderate</option>
+                <option value="high">High</option>
+            </select>
+
+            <fieldset class="radio-group" aria-label="Family History">
+                <legend>Family History</legend>
+                <label class="custom-radio">
+                    <input type="radio" name="family_history" value="yes" checked />
+                    <span>Yes</span>
+                </label>
+                <label class="custom-radio">
+                    <input type="radio" name="family_history" value="no" />
+                    <span>No</span>
+                </label>
+            </fieldset>
+
+            <label for="blood_pressure">Blood Pressure</label>
+            <input type="range" id="blood_pressure" name="blood_pressure" min="80" max="200" value="120" oninput="this.nextElementSibling.value = this.value" />
+            <output>120</output>
+
+            <label for="cholesterol_level">Cholesterol Level</label>
+            <input type="range" id="cholesterol_level" name="cholesterol_level" min="100" max="300" value="200" oninput="this.nextElementSibling.value = this.value" />
+            <output>200</output>
+
+            <label for="glucose_level">Glucose Level</label>
+            <input type="range" id="glucose_level" name="glucose_level" min="70" max="200" value="100" oninput="this.nextElementSibling.value = this.value" />
+            <output>100</output>
+
+            <label for="heart_rate">Heart Rate</label>
+            <input type="range" id="heart_rate" name="heart_rate" min="40" max="160" value="70" oninput="this.nextElementSibling.value = this.value" />
+            <output>70</output>
+
+            <label for="mental_health_score">Mental Health Score</label>
+            <input type="range" id="mental_health_score" name="mental_health_score" min="0" max="10" step="0.1" value="5" oninput="this.nextElementSibling.value = this.value" />
+            <output>5</output>
+
+            <input type="submit" value="Predict" />
+        </form>
+    </main>
+</body>
+</html>

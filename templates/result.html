@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Health Risk Assessment Results - HealthPredictor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Animated gradient background */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-15px) rotate(2deg); }
+            66% { transform: translateY(-8px) rotate(-1deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: #fff;
+            overflow-x: hidden;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Floating background elements */
+        .bg-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .shape:nth-child(1) {
+            width: 120px;
+            height: 120px;
+            top: 15%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 80px;
+            height: 80px;
+            top: 70%;
+            right: 15%;
+            animation-delay: 3s;
+        }
+
+        .shape:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            top: 40%;
+            left: 80%;
+            animation-delay: 6s;
+        }
+
+        .shape:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 2s;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 2rem 2rem 0;
+            animation: slideInUp 0.8s ease forwards;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo svg {
+            width: 30px;
+            height: 30px;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #fff, #f0f8ff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #e8f4fd;
+            margin-bottom: 2rem;
+        }
+
+        /* Main Content */
+        main {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Current Result Section */
+        .current-result {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: scaleIn 1s ease 0.3s both;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(30px);
+            border-radius: 25px;
+            padding: 3rem 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: 25px;
+        }
+
+        .result-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .current-risk-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem 3rem;
+            border-radius: 50px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+        }
+
+        .current-risk-indicator.low {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .current-risk-indicator.moderate {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+            color: #333;
+        }
+
+        .current-risk-indicator.high {
+            background: linear-gradient(135deg, #dc3545, #e83e8c);
+            color: white;
+        }
+
+        .risk-icon {
+            width: 40px;
+            height: 40px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .result-description {
+            font-size: 1.2rem;
+            color: #e8f4fd;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* Risk Levels Grid */
+        .risk-levels-section {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            color: #fff;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            animation: slideInUp 0.8s ease 0.6s both;
+        }
+
+        .risk-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .risk-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(25px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 0.8s ease both;
+        }
+
+        .risk-card:nth-child(1) { animation-delay: 0.8s; }
+        .risk-card:nth-child(2) { animation-delay: 1s; }
+        .risk-card:nth-child(3) { animation-delay: 1.2s; }
+
+        .risk-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            border-radius: 20px;
+        }
+
+        .risk-card:hover::before {
+            opacity: 1;
+        }
+
+        .risk-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .risk-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .risk-card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .risk-level-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .risk-card.low .risk-level-icon {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .risk-card.moderate .risk-level-icon {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+        }
+
+        .risk-card.high .risk-level-icon {
+            background: linear-gradient(135deg, #dc3545, #e83e8c);
+        }
+
+        .risk-level-icon svg {
+            width: 30px;
+            height: 30px;
+            color: white;
+        }
+
+        .risk-card.moderate .risk-level-icon svg {
+            color: #333;
+        }
+
+        .risk-card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .risk-description {
+            font-size: 1rem;
+            color: #e8f4fd;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .precautions-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .precautions-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .precautions-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+            color: #e8f4fd;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .precautions-list li::before {
+            content: '•';
+            color: #4facfe;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-top: -0.1rem;
+        }
+
+        /* Action Buttons */
+        .action-section {
+            text-align: center;
+            animation: slideInUp 0.8s ease 1.4s both;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1.2rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            margin-top: 3rem;
+        }
+
+        .footer p {
+            color: #e8f4fd;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .risk-cards-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .risk-card {
+                padding: 2rem;
+            }
+
+            .current-risk-indicator {
+                font-size: 1.5rem;
+                padding: 1.2rem 2rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                padding: 1rem 2rem;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .result-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .risk-card {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating background shapes -->
+    <div class="bg-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <h1>Your Health Assessment Results</h1>
+        <p>Comprehensive analysis based on your health data</p>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Current Result -->
+        <section class="current-result">
+            <div class="result-card">
+                <div id="currentRiskIndicator" class="current-risk-indicator low">
+                    <div class="risk-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <span id="currentRiskText">Low Risk</span>
+                </div>
+                <div id="currentDescription" class="result-description">
+                    Great news! Your health indicators suggest a low risk profile. Keep maintaining your healthy lifestyle to continue on this positive path.
+                </div>
+            </div>
+        </section>
+
+        <!-- Risk Levels Information -->
+        <section class="risk-levels-section">
+            <h2 class="section-title">Understanding Risk Levels</h2>
+            <div class="risk-cards-grid">
+                <!-- Low Risk Card -->
+                <div class="risk-card low">
+                    <div class="risk-card-header">
+                        <div class="risk-level-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <h3 class="risk-card-title">Low Risk</h3>
+                    </div>
+                    <p class="risk-description">
+                        Excellent health indicators! Your current lifestyle and health metrics suggest minimal risk for major health complications. Continue your great habits to maintain this status.
+                    </p>
+                    <h4 class="precautions-title">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Maintenance Recommendations
+                    </h4>
+                    <ul class="precautions-list">
+                        <li>Continue eating balanced meals rich in fruits, vegetables, and lean proteins</li>
+                        <li>Maintain regular exercise routine (150+ minutes per week)</li>
+                        <li>Keep stress levels manageable through relaxation techniques</li>
+                        <li>Ensure 7-9 hours of quality sleep nightly</li>
+                        <li>Schedule annual health checkups for preventive care</li>
+                        <li>Stay hydrated and limit processed foods</li>
+                    </ul>
+                </div>
+
+                <!-- Moderate Risk Card -->
+                <div class="risk-card moderate">
+                    <div class="risk-card-header">
+                        <div class="risk-level-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <h3 class="risk-card-title">Moderate Risk</h3>
+                    </div>
+                    <p class="risk-description">
+                        Some health indicators need attention. With targeted lifestyle improvements, you can significantly reduce your risk and improve your overall health trajectory.
+                    </p>
+                    <h4 class="precautions-title">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Improvement Actions
+                    </h4>
+                    <ul class="precautions-list">
+                        <li>Increase physical activity to at least 150 minutes weekly</li>
+                        <li>Adopt a heart-healthy diet low in saturated fats and refined sugars</li>
+                        <li>Reduce alcohol consumption and eliminate smoking</li>
+                        <li>Monitor blood pressure and cholesterol levels regularly</li>
+                        <li>Implement stress reduction techniques like meditation or yoga</li>
+                        <li>Schedule bi-annual health screenings and follow-ups</li>
+                    </ul>
+                </div>
+
+                <!-- High Risk Card -->
+                <div class="risk-card high">
+                    <div class="risk-card-header">
+                        <div class="risk-level-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                            </svg>
+                        </div>
+                        <h3 class="risk-card-title">High Risk</h3>
+                    </div>
+                    <p class="risk-description">
+                        Multiple risk factors require immediate attention. Working closely with healthcare professionals and making significant lifestyle changes can help reduce your risk substantially.
+                    </p>
+                    <h4 class="precautions-title">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        </svg>
+                        Urgent Actions Required
+                    </h4>
+                    <ul class="precautions-list">
+                        <li>Consult healthcare professionals immediately for personalized treatment</li>
+                        <li>Implement comprehensive lifestyle changes under medical supervision</li>
+                        <li>Monitor vital signs (blood pressure, glucose, cholesterol) closely</li>
+                        <li>Follow prescribed medications and treatments rigorously</li>
+                        <li>Attend regular medical appointments and screenings</li>
+                        <li>Seek support for mental health and stress management</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Action Buttons -->
+        <section class="action-section">
+            <div class="action-buttons">
+                <a href="/index" class="btn btn-primary">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    Take New Assessment
+                </a>
+                <a href="#" class="btn btn-secondary">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Download Report
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 HealthPredictor Inc. All rights reserved. | Your health data is secure and confidential.</p>
+    </footer>
+
+    <script>
+        // Configuration for different risk levels
+        const riskConfig = {
+            low: {
+                className: 'low',
+                icon: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>`,
+                title: 'Low Risk',
+                description: 'Great news! Your health indicators suggest a low risk profile. Keep maintaining your healthy lifestyle to continue on this positive path.'
+            },
+            moderate: {
+                className: 'moderate',
+                icon: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>`,
+                title: 'Moderate Risk',
+                description: 'Some health indicators need attention. With targeted lifestyle improvements, you can significantly reduce your risk and move towards better health.'
+            },
+            high: {
+                className: 'high',
+                icon: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                </svg>`,
+                title: 'High Risk',
+                description: 'Multiple risk factors require immediate attention. Working with healthcare professionals and making significant changes can help reduce your risk substantially.'
+            }
+        };
+
+        // Function to update the current result display
+        function updateCurrentResult(prediction) {
+            const config = riskConfig[prediction] || riskConfig.low;
+            
+            const indicator = document.getElementById('currentRiskIndicator');
+            const text = document.getElementById('currentRiskText');
+            const description = document.getElementById('currentDescription');
+            
+            indicator.className = `current-risk-indicator ${config.className}`;
+            indicator.querySelector('.risk-icon').innerHTML = config.icon;
+            text.textContent = config.title;
+            description.textContent = config.description;
+        }
+
+        // Initialize with default or get from backend
+        // Replace "{{ prediction }}" with actual backend template variable
+        const prediction = "{{ prediction }}".toLowerCase() || "low";
+        updateCurrentResult(prediction);
+
+        // Add smooth scroll behavior for better UX
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add interactive hover effects
+        document.querySelectorAll('.risk-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
