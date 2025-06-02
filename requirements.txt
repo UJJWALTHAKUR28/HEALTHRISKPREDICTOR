@@ -2,3 +2,4 @@ Flask==2.3.2
 numpy==1.24.3
 scikit-learn==1.2.2
 gunicorn==21.2.0
+catboost==1.2.3
